@@ -1,4 +1,7 @@
-<?php require_once 'config.php'; ?>
+<?php
+require_once 'config.php';
+if (session_status() === PHP_SESSION_NONE) session_start();
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -11,21 +14,17 @@
 </head>
 <body>
 
-<!-- ======= NAVBAR ======= -->
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top px-3" id="mainNav">
   <div class="container-fluid">
 
-    <!-- Logo -->
     <a class="navbar-brand fw-bold fs-2" href="index.php">
       <span style="color:#e50914;">Cool</span><span class="text-white">Flix</span>
     </a>
 
-    <!-- Bouton mobile -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <!-- Liens -->
     <div class="collapse navbar-collapse" id="navMenu">
       <ul class="navbar-nav ms-4 gap-2">
         <li class="nav-item">
@@ -48,22 +47,63 @@
             <i class="fas fa-satellite-dish me-1"></i>Live TV
           </a>
         </li>
+        <?php if(isset($_SESSION['user'])): ?>
+        <li class="nav-item">
+          <a class="nav-link <?php echo basename($_SERVER['PHP_SELF'])=='maliste.php'?'active':''; ?>" href="maliste.php">
+            <i class="fas fa-heart me-1"></i>Ma Liste
+          </a>
+        </li>
+        <?php endif; ?>
       </ul>
 
-      <!-- Barre de recherche -->
-      <form class="ms-auto d-flex align-items-center" action="search.php" method="GET">
-        <div class="input-group">
-          <input class="form-control bg-dark text-white border-secondary"
-                 type="search" name="q"
-                 placeholder="🔍 Rechercher un film, série..."
-                 style="width:280px; border-radius:20px 0 0 20px;">
-          <button class="btn btn-danger" type="submit" style="border-radius:0 20px 20px 0;">
-            <i class="fas fa-search"></i>
-          </button>
-        </div>
-      </form>
-    </div>
+      <div class="ms-auto d-flex align-items-center gap-3">
 
+        <!-- Barre de recherche -->
+        <form class="d-flex" action="search.php" method="GET">
+          <div class="input-group">
+            <input class="form-control bg-dark text-white border-secondary"
+                   type="search" name="q"
+                   placeholder="🔍 Rechercher..."
+                   style="width:220px; border-radius:20px 0 0 20px;">
+            <button class="btn btn-danger" type="submit" style="border-radius:0 20px 20px 0;">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </form>
+
+        <!-- Connecté -->
+        <?php if(isset($_SESSION['user'])): ?>
+        <div class="dropdown">
+          <button class="btn btn-outline-light dropdown-toggle" data-bs-toggle="dropdown">
+            <i class="fas fa-user-circle me-1"></i>
+            <?php echo htmlspecialchars($_SESSION['user']['nom']); ?>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+            <li>
+              <a class="dropdown-item" href="maliste.php">
+                <i class="fas fa-heart me-2"></i>Ma Liste
+              </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a class="dropdown-item text-danger" href="logout.php">
+                <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Non connecté -->
+        <?php else: ?>
+        <a href="login.php" class="btn btn-outline-light btn-sm px-3">
+          <i class="fas fa-sign-in-alt me-1"></i>Connexion
+        </a>
+        <a href="register.php" class="btn btn-danger btn-sm px-3">
+          <i class="fas fa-user-plus me-1"></i>S'inscrire
+        </a>
+        <?php endif; ?>
+
+      </div>
+    </div>
   </div>
 </nav>
-<!-- ======= FIN NAVBAR ======= -->
