@@ -6,32 +6,35 @@ session_start();
 $erreur = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email    = trim($_POST['email'] ?? '');
-    $password = $_POST['password'] ?? '';
+  $email = trim($_POST['email'] ?? '');
+  $password = $_POST['password'] ?? '';
 
-    $usersFile = 'users.json';
-    $users = file_exists($usersFile) ? json_decode(file_get_contents($usersFile), true) : [];
+  $usersFile = 'users.json';
+  $users = file_exists($usersFile) ? json_decode(file_get_contents($usersFile), true) : [];
 
-    $found = false;
-    foreach ($users as $u) {
-        if ($u['email'] === $email && password_verify($password, $u['password'])) {
-            $_SESSION['user'] = [
-                'id'    => $u['id'],
-                'nom'   => $u['nom'],
-                'email' => $u['email']
-            ];
-            $found = true;
-            header('Location: index.php');
-            exit;
-        }
+  $found = false;
+  foreach ($users as $u) {
+    if ($u['email'] === $email && password_verify($password, $u['password'])) {
+      $_SESSION['user'] = [
+        'id' => $u['id'],
+        'nom' => $u['nom'],
+        'email' => $u['email'],
+        'role' => $u['role'] ?? 'user'
+      ];
+      $found = true;
+      header('Location: index.php');
+      exit;
     }
-    if (!$found) $erreur = 'Email ou mot de passe incorrect.';
+  }
+  if (!$found)
+    $erreur = 'Email ou mot de passe incorrect.';
 }
 
 require_once 'header.php';
 ?>
 
-<div style="background:#0a0a0a; min-height:100vh; display:flex; align-items:center; justify-content:center; padding-top:80px;">
+<div
+  style="background:#0a0a0a; min-height:100vh; display:flex; align-items:center; justify-content:center; padding-top:80px;">
   <div class="container" style="max-width:420px;">
 
     <div class="text-center mb-4">
@@ -43,20 +46,20 @@ require_once 'header.php';
 
     <div class="p-4 rounded" style="background:#141414; border:1px solid #333;">
 
-      <?php if($erreur): ?>
-      <div class="alert alert-danger"><?php echo $erreur; ?></div>
+      <?php if ($erreur): ?>
+        <div class="alert alert-danger"><?php echo $erreur; ?></div>
       <?php endif; ?>
 
       <form method="POST">
         <div class="mb-3">
           <label class="text-white-50 small mb-1">Email</label>
           <input type="email" name="email" class="form-control bg-dark text-white border-secondary"
-                 placeholder="ton@email.com" required autofocus>
+            placeholder="ton@email.com" required autofocus>
         </div>
         <div class="mb-4">
           <label class="text-white-50 small mb-1">Mot de passe</label>
           <input type="password" name="password" class="form-control bg-dark text-white border-secondary"
-                 placeholder="Ton mot de passe" required>
+            placeholder="Ton mot de passe" required>
         </div>
         <button type="submit" class="btn btn-danger w-100 btn-lg fw-bold">
           Se connecter

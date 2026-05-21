@@ -34,4 +34,13 @@ function sanitize($data) {
     }
     return htmlspecialchars(strip_tags(trim($data)), ENT_QUOTES, 'UTF-8');
 }
+
+// Charger les modules de sécurité
+require_once __DIR__ . '/ntp.php';
+require_once __DIR__ . '/syslog_app.php';
+require_once __DIR__ . '/acl.php';
+
+// Fuseau horaire Paris
+date_default_timezone_set('Europe/Paris');
+
 ?>

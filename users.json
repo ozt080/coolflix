@@ -1,0 +1,11 @@
+[
+    {
+        "id": "596973e795a92892f7645891efd02d1a",
+        "nom": "Berkan",
+        "email": "berkanoztas11@gmail.com",
+        "password": "$2y$12$ePhQFUiXYAKEgvWkxBqiZOUb86XL3HYDSnmh99N3mqS1edfPZ7HSO",
+        "maListe": [],
+        "created": "2026-05-21 10:32:14",
+        "role": "admin"
+    }
+]
