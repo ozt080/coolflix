@@ -1,2 +1,4 @@
 [2026-05-21 10:38:13] [WARNING] [IP:::1] [User:berkanoztas11@gmail.com] [Page:/admin.php] Accès refusé à 'admin_panel' pour IP: ::1
 [2026-05-21 10:40:22] [WARNING] [IP:::1] [User:berkanoztas11@gmail.com] [Page:/admin.php] Accès refusé à 'admin_panel' pour IP: ::1
+[2026-05-21 10:51:32] [WARNING] [IP:0.0.0.0] [User:guest] [Page:admin.php] Accès refusé à 'admin_panel' pour IP: 0.0.0.0
+[2026-05-21 10:53:16] [6] [IP:::1] [User:berkanoztas11@gmail.com] [Page:/admin.php] Accès au panneau admin

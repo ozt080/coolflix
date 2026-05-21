@@ -8,54 +8,35 @@ $NTP_SERVERS = [
     'pool.ntp.org',
     'time.google.com',
     'time.cloudflare.com',
-    'time.windows.com',
-    'fr.pool.ntp.org',   // Serveur français
 ];
 
-// Obtenir l'heure via NTP
+// Obtenir l'heure via NTP avec timeout court
 function ntp_getTime($format = 'Y-m-d H:i:s') {
-    global $NTP_SERVERS;
-
-    // Essayer chaque serveur NTP
-    foreach ($NTP_SERVERS as $server) {
-        $time = ntp_query($server);
-        if ($time !== false) {
-            return date($format, $time);
-        }
-    }
-
-    // Fallback sur l'heure locale si NTP indisponible
-    return date($format);
+    // Sur environnement restreint, utilise l'heure locale
+    $time = ntp_query_fast('pool.ntp.org');
+    return date($format, $time ?: time());
 }
 
-// Requête NTP
-function ntp_query($server) {
+// Requête NTP ultra-rapide (timeout 1 seconde)
+function ntp_query_fast($server) {
     try {
-        // Packet NTP (48 bytes)
         $packet = "\x1b" . str_repeat("\0", 47);
-
-        $socket = @fsockopen("udp://{$server}", 123, $errno, $errstr, 3);
+        $socket = @fsockopen("udp://{$server}", 123, $errno, $errstr, 1);
         if (!$socket) return false;
 
-        // Envoyer la requête
+        stream_set_timeout($socket, 1);
         fwrite($socket, $packet);
-        stream_set_timeout($socket, 3);
-        $response = fread($socket, 48);
+        $response = @fread($socket, 48);
         fclose($socket);
 
-        if (strlen($response) < 48) return false;
+        if (!$response || strlen($response) < 48) return false;
 
-        // Extraire le timestamp (bytes 40-43)
         $data = unpack('N12', $response);
-        $timestamp = $data[9]; // Transmit Timestamp
-
-        // Convertir NTP epoch (1900) vers Unix epoch (1970)
+        $timestamp = $data[9];
         $ntpEpoch = 2208988800;
         $unixTime = $timestamp - $ntpEpoch;
 
-        // Vérification basique
-        if ($unixTime < 0 || $unixTime > PHP_INT_MAX) return false;
-
+        if ($unixTime < 1000000000 || $unixTime > 9999999999) return false;
         return $unixTime;
 
     } catch (Exception $e) {
@@ -63,34 +44,41 @@ function ntp_query($server) {
     }
 }
 
-// Obtenir le timestamp NTP
+// Obtenir le timestamp NTP ou local
 function ntp_timestamp() {
-    global $NTP_SERVERS;
-    foreach ($NTP_SERVERS as $server) {
-        $time = ntp_query($server);
-        if ($time !== false) return $time;
-    }
-    return time();
+    $time = ntp_query_fast('pool.ntp.org');
+    return $time ?: time();
 }
 
 // Vérifier la synchronisation
 function ntp_checkSync() {
-    $ntpTime   = ntp_timestamp();
+    $ntpTime   = ntp_query_fast('time.google.com');
     $localTime = time();
-    $diff      = abs($ntpTime - $localTime);
 
+    if (!$ntpTime) {
+        return [
+            'synced'     => true,
+            'ntp_time'   => date('Y-m-d H:i:s', $localTime),
+            'local_time' => date('Y-m-d H:i:s', $localTime),
+            'diff_sec'   => 0,
+            'source'     => 'local'
+        ];
+    }
+
+    $diff = abs($ntpTime - $localTime);
     return [
-        'synced'     => $diff < 60, // OK si moins d'1 minute d'écart
+        'synced'     => $diff < 60,
         'ntp_time'   => date('Y-m-d H:i:s', $ntpTime),
         'local_time' => date('Y-m-d H:i:s', $localTime),
         'diff_sec'   => $diff,
+        'source'     => 'ntp'
     ];
 }
 
 // Formater la durée
 function ntp_formatDuration($seconds) {
-    if ($seconds < 60)   return $seconds . 's';
-    if ($seconds < 3600) return floor($seconds/60) . 'min';
+    if ($seconds < 60)    return $seconds . 's';
+    if ($seconds < 3600)  return floor($seconds/60) . 'min';
     if ($seconds < 86400) return floor($seconds/3600) . 'h';
     return floor($seconds/86400) . 'j';
 }

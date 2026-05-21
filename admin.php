@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 $pageTitle = "Administration";
 require_once 'config.php';
 require_once 'ntp.php';
