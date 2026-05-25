@@ -2,7 +2,7 @@
 <footer class="text-center text-white py-5 mt-5" id="mainFooter">
   <div class="container">
     <h4 class="fw-bold mb-1">
-      <span style="color:#e50914;">Cool</span>Flix
+      <span style="color:#e50914;">Can</span>Flix
     </h4>
     <p class="text-secondary small mb-3">Films • Séries • Chaînes Turques & Françaises en Direct</p>
     <div class="d-flex justify-content-center gap-4 mb-3">

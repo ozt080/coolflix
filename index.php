@@ -15,7 +15,7 @@ function tmdbGet($endpoint) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_TIMEOUT, 10);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_USERAGENT, 'CoolFlix/1.0');
+    curl_setopt($ch, CURLOPT_USERAGENT, 'CanFlix/1.0');
     $response = curl_exec($ch);
     curl_close($ch);
 

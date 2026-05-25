@@ -10,7 +10,7 @@ define('TMDB_IMG_URL',  'https://image.tmdb.org/t/p/w500');
 define('TMDB_IMG_ORIGINAL', 'https://image.tmdb.org/t/p/original');
 
 // Infos site
-define('SITE_NAME', 'CoolFlix');
+define('SITE_NAME', 'CanFlix');
 define('SITE_URL',  getenv('RAILWAY_STATIC_URL') ?: 'http://localhost:8000');
 
 // Sécurité sessions

@@ -18,7 +18,7 @@ if (session_status() === PHP_SESSION_NONE) session_start();
   <div class="container-fluid">
 
     <a class="navbar-brand fw-bold fs-2" href="index.php">
-      <span style="color:#e50914;">Cool</span><span class="text-white">Flix</span>
+      <span style="color:#e50914;">Can</span><span class="text-white">Flix</span>
     </a>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
